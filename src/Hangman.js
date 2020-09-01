@@ -7,17 +7,19 @@ import img3 from "./3.jpg";
 import img4 from "./4.jpg";
 import img5 from "./5.jpg";
 import img6 from "./6.jpg";
+import uuid from "react-uuid";
+import { randomWord } from "./words";
 
 class Hangman extends Component {
   /** by default, allow 6 guesses and use provided gallows images. */
   static defaultProps = {
     maxWrong: 6,
-    images: [img0, img1, img2, img3, img4, img5, img6]
+    images: [img0, img1, img2, img3, img4, img5, img6],
   };
 
   constructor(props) {
     super(props);
-    this.state = { nWrong: 0, guessed: new Set(), answer: "apple" };
+    this.state = { nWrong: 0, guessed: new Set(), answer: randomWord() };
     this.handleGuess = this.handleGuess.bind(this);
   }
 
@@ -27,7 +29,7 @@ class Hangman extends Component {
   guessedWord() {
     return this.state.answer
       .split("")
-      .map(ltr => (this.state.guessed.has(ltr) ? ltr : "_"));
+      .map((ltr) => (this.state.guessed.has(ltr) ? ltr : "_"));
   }
 
   /** handleGuest: handle a guessed letter:
@@ -36,34 +38,51 @@ class Hangman extends Component {
   */
   handleGuess(evt) {
     let ltr = evt.target.value;
-    this.setState(st => ({
+    this.setState((st) => ({
       guessed: st.guessed.add(ltr),
-      nWrong: st.nWrong + (st.answer.includes(ltr) ? 0 : 1)
+      nWrong: st.nWrong + (st.answer.includes(ltr) ? 0 : 1),
     }));
   }
 
   /** generateButtons: return array of letter buttons to render */
+
   generateButtons() {
-    return "abcdefghijklmnopqrstuvwxyz".split("").map(ltr => (
-      <button
-        value={ltr}
-        onClick={this.handleGuess}
-        disabled={this.state.guessed.has(ltr)}
-      >
-        {ltr}
-      </button>
-    ));
+    if (this.state.nWrong < this.props.maxWrong) {
+      return "abcdefghijklmnopqrstuvwxyz".split("").map((ltr) => (
+        <button
+          key={uuid()}
+          value={ltr}
+          onClick={this.handleGuess}
+          disabled={this.state.guessed.has(ltr)}
+        >
+          {ltr}
+        </button>
+      ));
+    } else
+      return (
+        <React.Fragment>
+          <span>You loose</span>
+          <br></br>
+          <span>The correct word was: {this.state.answer}</span>
+        </React.Fragment>
+      );
   }
 
   /** render: render game */
   render() {
     return (
-      <div className='Hangman'>
-        <h1>Hangman</h1>
-        <img src={this.props.images[this.state.nWrong]} />
-        <p className='Hangman-word'>{this.guessedWord()}</p>
-        <p className='Hangman-btns'>{this.generateButtons()}</p>
-      </div>
+      <React.Fragment>
+        <div className="Hangman">
+          <h1>Hangman</h1>
+          <img
+            src={this.props.images[this.state.nWrong]}
+            alt={`Wrong Guesses: ${this.state.nWrong} `}
+          />
+          <h3>Wrong Guesses: {this.state.nWrong} </h3>
+          <p className="Hangman-word">{this.guessedWord()}</p>
+          <p className="Hangman-btns">{this.generateButtons()}</p>
+        </div>
+      </React.Fragment>
     );
   }
 }
