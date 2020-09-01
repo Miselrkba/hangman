@@ -58,7 +58,8 @@ class Hangman extends Component {
           {ltr}
         </button>
       ));
-    } else
+    } 
+    else
       return (
         <React.Fragment>
           <span>You loose</span>
@@ -68,17 +69,28 @@ class Hangman extends Component {
       );
   }
 
+  // reset button
+  handleClick = () => {
+    this.setState({
+      nWrong: 0,
+      guessed: new Set(),
+      answer: randomWord(),
+    });
+  };
+
   /** render: render game */
   render() {
     return (
       <React.Fragment>
         <div className="Hangman">
           <h1>Hangman</h1>
+
           <img
             src={this.props.images[this.state.nWrong]}
             alt={`Wrong Guesses: ${this.state.nWrong} `}
           />
           <h3>Wrong Guesses: {this.state.nWrong} </h3>
+          <button onClick={this.handleClick}>Restart game</button>
           <p className="Hangman-word">{this.guessedWord()}</p>
           <p className="Hangman-btns">{this.generateButtons()}</p>
         </div>
