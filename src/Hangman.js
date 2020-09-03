@@ -26,6 +26,14 @@ class Hangman extends Component {
   /** guessedWord: show current-state of word:
     if guessed letters are {a,p,e}, show "app_e" for "apple"
   */
+
+  //1.we're taking the 'apple' splitting it into an array (split every character)
+  //2.mapping it into a new array.
+  //- That is going to return the _ character or the actual letter
+  //3.cheking inside this.state.guessed is a new Set(). 
+  //- Which at the beggining is an empty set. But eventually might contain some
+  // other letters . So if the user guessed the letter we're going to put the letter in
+  // otherwise we place a "_"
   guessedWord() {
     return this.state.answer
       .split("")
@@ -36,6 +44,13 @@ class Hangman extends Component {
     - add to guessed letters
     - if not in answer, increase number-wrong guesses
   */
+ //1. theres a evt.target.value
+ // (so if you click on the button you have access to what was clicked on)
+ //2. then we're setting state guessed(which inclued all the letters currently guessed)
+ // and adding whatever ltr pressed into that state
+ //3. then we're potentialy updating nWrong
+ // - so if the answer inclueds that letter we're going to add zero to nWrong
+ // if it doesnt include it we add 1(that increments nWrong by 1)
   handleGuess(evt) {
     let ltr = evt.target.value;
     this.setState((st) => ({
@@ -45,7 +60,13 @@ class Hangman extends Component {
   }
 
   /** generateButtons: return array of letter buttons to render */
-
+  // we take a string of all letters(26) and split it into an array
+  // and then we map over it for each letter we make a new button
+  // that button has a value set to ltr and a disabled attribute
+  // which is going ot prevent us from clicking a ltr that has been clicked
+  // it has some style for when the button is disabled (.Hangman button:disabled)
+  // so in disabled were checking if the guessed set already has this ltr
+  // and the text inside the button is the ltr itself{ltr}
   generateButtons() {
     if (this.state.nWrong < this.props.maxWrong) {
       return "abcdefghijklmnopqrstuvwxyz".split("").map((ltr) => (
